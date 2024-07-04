@@ -1,12 +1,34 @@
 .jio{
     width: 100%;
 }
-.ui{
-    text-align: center;
-    display: block;
-    
-    
+
+.shadow{
+    filter: hue-rotate(45deg);
 }
-.ux{
-    width: 100px;
+
+@media(min-width:600px){
+    .top_shadow{
+        box-shadow: 0 0 30px black;
+    }
+    #top_actions_sections{
+    display: flex;
+    align-items: center;
+    }
 }
+
+
+.goTo .backTo{
+    transition: all 200ms ease;
+}
+
+
+.goTo.active .backTo{
+    transform: rotate(180deg);
+
+}
+
+.goTo , .goTo.goTo.active .collapsible-header{
+    background-color: rgba(128, 130, 133, 0.349);
+}
+
+
