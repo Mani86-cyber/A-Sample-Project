@@ -4,20 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unknown</title>
+    <link rel="icon" type="image/x-icon" href="/Asset/Images/Skyrim-Logo.ico">
     <link rel="stylesheet" href="/Asset/materialize/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/Asset/Css/Style.css">
     <link rel="stylesheet" href="/Asset/Css/util.css">
 </head>
-<body>
+
+<body x-data="One">
 
     <nav class="indigo darken-4 top_shadow">
         <div class="nav-wrapper">
-          <a href="#!" class="brand-logo lime-text hide-on-med-and-up">Logo</a>
+          <a href="#!" class="lime-text hide-on-med-and-up">Users Manager</a>
           <a href="#" data-target="mobile-demo" class="sidenav-trigger green-text"><i class="material-icons">menu</i></a>
           <ul class="left hide-on-med-and-down">
             <li><a href="/">Home</a></li>
-            <li><a href="/Users.html">User Manager</a></li>
+            <li><a href="/Users.html">Users Manager</a></li>
             <li><a href="https://codeyad.com">Codeyad</a></li>
             <li><a href="https://www.w3schools.com/">AQ Fast Learn</a></li>
           </ul>
@@ -38,19 +40,20 @@
           <li><div class="divider"></div></li>
           <li><a class="pages">Subheader</a></li>
           <li><a class="waves-effect" href="/">Home</a></li>
-          <li><a class="waves-effect" href="/Users.html">User</a></li>
+          <li><a class="waves-effect" href="/Users.html">Users</a></li>
       </ul>
-      
+
       <section id="top_actions_sections" class="row m-b-0">
         <div class="col s12 m4 l3">
-            <button class="waves-effect waves-light btn p-r-30 p-l-30 w-full rounded_pill flex-c">
+            <button id="active_add_users" class="waves-effect waves-light btn p-r-30 p-l-30 w-full rounded_pill flex-c"x-on:click="showModdal=true; userID_forEdit = null; handleReset_form()">
                 <i class="material-icons m-r-5">add</i>
                 Add User
             </button>
         </div>
         <div class="row col s12 m5 l7 m-b-5">
-            <div class="input-field col s12">
-              <input id="search" type="text" class="validate">
+            <div class="input-field col s12"
+            x-init="$watch('searchTab', (value)=>handleSearch(value))">
+              <input id="search" type="text" class="validate" x-model="searchTab">
               <label for="search">
                 <i class="material-icons pos-relative top-4">search</i>
                 Search
@@ -61,28 +64,126 @@
         <div class="col m3 l2 "></div>
       </section>
 
-      <section>
-        <ul class="collapsible">
-          <li class="goTo">
-            <div class="collapsible-header"><i class="material-icons  indigo-text darken-4 backTo">account_box</i>Mani Chenari</div>
+
+      <!-- loading Page -->
+    <template x-if="isLoading">
+      <div class="center-align">
+        <div class="preloader-wrapper big active">
+          <div class="spinner-layer spinner-blue-only">
+            <div class="circle-clipper left">
+              <div class="circle"></div>
+            </div><div class="gap-patch">
+              <div class="circle"></div>
+            </div><div class="circle-clipper right">
+              <div class="circle"></div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </template>
+      <section class="footer_Fix" x-init="getUsers()">
+        <ul class="collapsible hide-on-med-and-up">
+          <template x-for = "user in pageUsers">
+            <li class="goTo">
+            <div class="collapsible-header"><i class="material-icons  indigo-text darken-4 backTo">account_box</i><span x-text="user.name"></span></div>
             <div class="collapsible-body">
               <div class="p-all-5">
-                <span class="f-bold">Introduction : </span>
-                <span>Mani Chenari Is One Student In 12 Grade</span>
+                <span class="f-bold" >Introduction : </span>
+                <span x-text="(user?.website || '-')"></span>
               </div>
               <div class="p-all-5">
-                <span class="f-bold"> Email: </span>
-                <span>maniChenari@gmail.com</span>
+                <span class="f-bold" > Email: </span>
+                <span x-text="user.email"></span>
               </div>
               <div class="p-all-5 flex-l-m">
                 <span class="f-bold">Action : </span>
-                <i class="material-icons red-text darken-4 m-l-5 m-r-5">delete_forever</i>
-                <i class="material-icons orange-text m-l-5 m-r-5">edit</i>
+                <i class="material-icons red-text darken-4 m-l-5 m-r-5" x-on:click="handleDelete_user(user.id)">delete_forever</i>
+                <i class="material-icons orange-text m-l-5 m-r-5" x-on:click="handleUser_update(user)">edit</i>
               </div>
-          </li>
+            </li>
+          </template>
+        </ul>
+
+        <div class="hide-on-med-and-down show-on-medium-and-up">
+          <table class="striped centered highlight container">
+            <thead>
+              <tr>
+                <th>Number</th>
+                <th>Name</th>
+                <th>Introduction</th>
+                <th>Email</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for = "user in pageUsers">
+                <tr>
+                  <td x-text="user.id"></td>
+                  <td x-text="user.name"></td>
+                  <td x-text="(user?.website || '-')"></td>
+                  <td x-text="user.email"></td>
+                  <td>
+                    <i class="material-icons red-text darken-4 m-l-5 m-r-5" x-on:click="handleDelete_user(user.id)">delete_forever</i>
+                    <i class="material-icons orange-text m-l-5 m-r-5" x-on:click="handleUser_update(user)">edit</i>
+                  </td>
+                </tr> 
+              </template>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pagination_container container p-r-9 p-l-9 p-t-15 p-b-10 flex-sb-m pos-fixed left-0 right-0 bottom-0 z-depth-4 rounded_top_30">
+          <div class="pagination_item_counts p-l-10 flex-l flex-l-m">
+            Showing
+            <span class="m-l-5 m-r-5 max-w-50 pos-relative top-4" x-init="$watch('itemsCount',(value)=>showingButton(value))">
+              <input type="number" class="blue-text darken-4 no-border center-align m-b-0" x-model="itemsCount" x-on:change="pagination()">
+            </span>
+            of
+            <span class="m-l-5 m-r-5 max-w-50 blue-text darken-4" x-text="users.length"></span>
+          </div>
+          <strong x-text="currentPage"class="numColor_page blue-text">1</strong>
+          <div class="pgination_buttons">
+            <i class="material-icons blue darken-2 waves-effect waves-light m-l-5 m-r-5 p-r-5 p-l-5 p-t-1 p-b-3 white-text rounded_pill"x-on:click="pervious_page()">keyboard_arrow_left</i>
+            <i class="material-icons blue darken-2 waves-effect waves-light m-l-5 m-r-5 p-r-5 p-l-5 p-t-1 p-b-3 white-text rounded_pill"x-on:click="next_page()">keyboard_arrow_right</i>
+          </div>
+
+        </div>
+
       </section>
 
+      <div class="add_users" x-show="showModdal" x-transition x-on:click = "showModdal=false"></div>
+      <div class="container window_add_users rounded_top_30 trans-0-3" x-bind:class = "{'show': showModdal}">
+        <div class="row p-t-10 p-b-10 p-r-40 p-l-40 center-on-small-only">
+          <h5>
+            <i class="material-icons m-r-10 m-l-10 pos-relative top-4 ">person_add</i>
+            <span x-text=" userID_forEdit ? 'Edit User' : 'Add User'"></span>
+          </h5>
 
+          <form class="">
+            <div class="input-field col s12">
+              <input id="name" type="text" class="validate" x-model="newUser_info.name"/>
+              <label for="name">name: </label>
+            </div>
+            <div class="input-field col s12">
+              <input id="email" type="email" class="validate" x-model="newUser_info.email"/>
+              <label for="email">Email: </label>
+            </div>
+            <div class="input-field col s12">
+              <input id="username" type="text" class="validate" x-model="newUser_info.username"/>
+              <label for="username">username: </label>
+            </div>
+
+            <button type="button" class="waves-light waves-effect btn blue darken-1 m-t-20 m-b-10 w-full max-w-250 rounded_pill" x-on:click=" userID_forEdit ? confrimEdit_user() : handleAdd_users()" x-bind:class="{'pulse' : isLoading, 'orange' : userID_forEdit}" x-bind:disabled = "isLoading">Submit</button>
+
+          </form>
+
+        </div>
+      </div>
+
+
+<script src="/Asset/Js/axios.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="/Asset/Js/alpainJS/alpainJs.js"></script>
 <script src="/Asset/materialize/js/materialize.min.js"></script>
 <script src="/Asset/Js/Main.js"></script>
 <script src="/Asset/Js/Users.js"></script>

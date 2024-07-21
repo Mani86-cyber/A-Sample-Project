@@ -31,4 +31,58 @@
     background-color: rgba(128, 130, 133, 0.349);
 }
 
+table.highlight > tbody > tr {
+    -webkit-transition: background-color .25s ease;
+    transition: background-color .25s ease;
+  }
+  
+  table.highlight > tbody > tr:hover {
+    background-color: #f0f4c3;
+  }
+
+.container{
+    width: 100% !important;
+}
+
+.add_users{
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 99;
+}
+
+
+.window_add_users{
+    background-color: white;
+    height: 70vh;
+    position: fixed;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    bottom: -70vh;
+}
+
+.window_add_users.show{
+    bottom: 0;
+}
+
+.footer_Fix{
+    height: calc(100vh - 250px);
+    overflow: auto;
+}
+
+.numColor_page{
+    border: 2px solid;
+    width:30px;
+    height:30px;
+    border-radius: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    margin-left:48px;
+}
 
